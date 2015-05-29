@@ -8,7 +8,8 @@ To solve a model, you have to load the package, create a variable of type CostPa
 
 ```julia
 using Leapfrog
-run()
+cost, mp = init_all(1) # 1 for the nC = 4 version
+stages, ess, number_of_equilibria = solve(cost, mp)
 ```
 
 A lot of this could be cleaner, but it works. Parameters of the model can be changed in Leapfrog.jl.
