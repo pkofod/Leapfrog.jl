@@ -1,7 +1,7 @@
 module Leapfrog
 
 import Base.length
-export init_cost, init, init_all, solve, getindex
+export init_cost, init, init_all, solve
 
 
 include("Types.jl")
@@ -9,7 +9,7 @@ include("Utilities.jl")
 include("Last.jl")
 include("Upper.jl")
 
-function solve(cost, mp)
+function solve(cost::CostParameters, mp::RLSModel)
     ess = ESS(cost.nC) # Start with feasible ESS; we're solving for all equilibria
     number_of_equilibria=0
     τ = Array(Stage, cost.nC)
@@ -31,23 +31,23 @@ function solve(cost, mp)
     number_of_equilibria += 1
     jump!(ess)
     if ess[1,1,1] != 0
-        for void=1:100000
-            
+        for void=1:1000000000
             if ess.ess_to_ic[ess.active][3] == ess.nC
                 solve_last_interior!(cost, mp, ess.ess_to_ic[ess.active][1], ess.ess_to_ic[ess.active][2], τ, ess)
             elseif ess.ess_to_ic[ess.active][3] < ess.nC
                 solve_interior!(cost, mp, ess.ess_to_ic[ess.active][3], ess.ess_to_ic[ess.active][1], ess.ess_to_ic[ess.active][2], τ, ess)
-            end 
+            end
 
             for ic = reverse(1:ess.ess_to_ic[ess.active][3]-1) # already solved stage!
                 solve_corner!(cost, mp, ic, τ, ess)
                 if ic != cost.nC
-                    solve_edges!(cost, mp, ic, τ, ess)             
+                    solve_edges!(cost, mp, ic, τ, ess)
                     solve_interior!(cost, mp, ic, τ, ess)
                 end
             end
             number_of_equilibria+=1
             jump!(ess)
+            mod(void, 100000) == 0 ? println(void) : 
             if ess[1,1,1] == 0
                 break
             end
@@ -66,7 +66,16 @@ function init_cost(switch::Int64)
         p = [1.; 1.; 1.; 0]
         π = 1-p
         return CostParameters(k1, k2, C, Cmin, nC, p, π)
-    else
+    elseif switch == 2
+        k1 = 8.3
+        k2 = 1.
+        C  = linspace(5, 0, 5)
+        Cmin = minimum(C)
+        nC = length(C)
+        p = [1.; 1.; 1.; 1.; 0.]
+        π = 1-p
+        return CostParameters(k1, k2, C, Cmin, nC, p, π)
+    elseif switch == 3
         k1 = 60.3
         k2 = 1.
         C  = linspace(5, 0, 3)
