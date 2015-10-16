@@ -41,7 +41,7 @@ function jump!(x::ESS)
     end
     X = Array(Int64,length(x))
     R = 1 # Remainder; first "remainder" is one, since we add one
-        for i in reverse(1:length(x)) # Slightly inefficient, as we go through R = 0 cases
+    @inbounds for i in reverse(1:length(x)) # Slightly inefficient, as we go through R = 0 cases
         X[i] = mod(x.number[i] + R,x.bases[i])
         R = div(x.number[i]+R,x.bases[i])
         if R == 0 && activated == false

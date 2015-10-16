@@ -76,7 +76,7 @@ function init_cost(switch::Int64)
         π = 1-p
         return CostParameters(k1, k2, C, Cmin, nC, p, π)
     elseif switch == 3
-        k1 = 60.3
+        k1 = 8.3
         k2 = 1.
         C  = linspace(5, 0, 3)
         Cmin = minimum(C)

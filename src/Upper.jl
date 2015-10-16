@@ -14,7 +14,7 @@ function solve_edges!(cost::CostParameters, mp::RLSModel, ic::Int64, τ::Array{S
     pi = cost.π[ic]
 
     # if at (c1,c,c) edge
-    for ic1 = 1:ic-1
+    @inbounds for ic1 = 1:ic-1
         c1 = cost.C[ic1]
         vI1 = -K(c,cost) + mp.β*H1(ic,ic,ic, pi, τ, ess)
 
@@ -69,7 +69,7 @@ function solve_edges!(cost::CostParameters, mp::RLSModel, ic::Int64, τ::Array{S
     end
 
     # if at (c,c2,c) edge
-    for ic2 = 1:ic-1
+    @inbounds for ic2 = 1:ic-1
         c2 = cost.C[ic2]
         vI2 = -K(c,cost) + mp.β*((1-pi)*Φ(τ[ic+1].EQs[ic, ic, ess[ic,ic,ic+1]].vN2,τ[ic+1].EQs[ic, ic, ess[ic,ic,ic+1]].vI2) + pi*Φ(τ[ic].EQs[ic, ic, ess[ic,ic,ic]].vN2,τ[ic].EQs[ic, ic, ess[ic,ic,ic]].vI2))
         a = vI2
@@ -161,7 +161,7 @@ function find_interior!(mp, cost, ic1, ic2, ic, c, τ::Array{Stage,1}, ess::ESS)
     pstar1 = quad(qa, qb, qc)
 
     count = 0
-    for i = 1:length(pstar1)
+    @inbounds for i = 1:length(pstar1)
         for j = 1:length(pstar2)
             if i in 1:2 && j in 1:2
                 exP1 = pc + pb * pstar2[j] + pa * pstar2[j]^2 < 0. ? 1. : 0.

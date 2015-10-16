@@ -27,7 +27,6 @@ end
 
 type Stage
     EQs::Array{EQ,3}
-#    ne::Array{Int64,2}
 end
 
 type ESS
@@ -75,7 +74,7 @@ function index_dict(nC::Int64)
     for ic = 1:nC
         for ic1 = 1:ic
             for ic2 = 1:ic
-                A[index(nC, ic1, ic2, ic)] = [ic1,ic2,ic] 
+                A[index(nC, ic1, ic2, ic)] = [ic1,ic2,ic]
                 B[ic1,ic2,ic] = index(nC, ic1, ic2, ic)
                 count += 1
             end
