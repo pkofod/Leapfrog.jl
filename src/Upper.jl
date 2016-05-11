@@ -54,7 +54,7 @@ function solve_edges!(cost::CostParameters, mp::RLSModel, ic::Int64, τ::Array{S
             end
         end
 
-        P1 = 0.
+        P1 = convert(Float64,vI1>vN1)
 
         vN2 = (r2(c1,c) + mp.β*(P1*((1-pi)*Φ(τ[ic+1].EQs[ic, ic, ess[ic,ic,ic+1]].vN2,τ[ic+1].EQs[ic, ic, ess[ic,ic,ic+1]].vI2) + pi*Φ(τ[ic].EQs[ic, ic, ess[ic,ic,ic]].vN2,τ[ic].EQs[ic, ic, ess[ic,ic,ic]].vI2))+(1-P1)*((1-pi)*Φ(τ[ic+1].EQs[ic1, ic, ess[ic1,ic,ic+1]].vN2,τ[ic+1].EQs[ic1, ic, ess[ic1,ic,ic+1]].vI2)+pi*Φ(0,-K(c, cost)))))/(1-mp.β*(1-P1)*pi)
         vI2 = vN2 - K(c, cost)
@@ -108,7 +108,7 @@ function solve_edges!(cost::CostParameters, mp::RLSModel, ic::Int64, τ::Array{S
             end
         end
 
-        P2 = 0.
+        P2 = convert(Float64,vI2>vN2)
 
         vN1 = (r1(c,c2) + mp.β*(P2*H1(ic,ic,ic, pi, τ, ess)+(1-P2)*((1-pi)*Φ(τ[ic+1].EQs[ic, ic2, ess[ic,ic2,ic+1]].vN1,τ[ic+1].EQs[ic, ic2, ess[ic,ic2,ic+1]].vI1)+pi*Φ(0,-K(c, cost)))))/(1-mp.β*(1-P2)*pi)
         vI1 = vN1-K(c, cost)
